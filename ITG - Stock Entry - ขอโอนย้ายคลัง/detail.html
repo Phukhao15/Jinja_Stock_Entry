@@ -1,0 +1,45 @@
+<style>
+	thead {display: table-header-group;}
+</style>
+
+{# table class="table table-bordered table-condensed" #}
+<table class="table table-bordered table-condensed" >
+    <caption><strong>Stock Entry Detail</strong></caption>
+    <thead class="repeat table_header">
+    <tr>
+        <th width=5%>No</th>
+        <th width=20%>Item Code</th>
+        <th width=25%>Description </th>
+        <th width=10%>from </th>
+        <th width=10%>to </th>
+        <th width=5%>Qty</th>
+    </tr>
+    </thead>
+{% for item in doc.items | sort (attribute='item_code') %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ item.item_code }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.s_warehouse }}</td>
+        <td>{{ item.t_warehouse }}</td>
+        <td style="text-align:center">{{ frappe.utils.fmt_money(item.qty,format='Integer') }}</td>
+    </tr>
+    {% if item.serial_no  %}
+    <tr>
+        <td></td>  
+        <td><strong> Batch </strong></td>
+        <td><strong> Serial No </strong></td>
+    </tr>
+        {% set serials = frappe.utils.itg_split_serial(item.serial_no) %}
+        {% for sn in serials %}
+        <tr>
+            <td></td>  
+            <td> {{ item.batch_no }} </td> 
+            <td> {{ sn }}  </td> 
+            <td></td><td></td>
+            <td> 1 </td>
+        </tr>    
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+</table>

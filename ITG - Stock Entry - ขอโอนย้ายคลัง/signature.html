@@ -1,0 +1,48 @@
+<style>
+body {
+    font-family: "TH Sarabun New", "TH Sarabun", Arial, sans-serif;
+    font-size: 14px;
+}
+
+.footer-signature {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+.footer-signature table {
+    width: 100%;
+    text-align: center;
+}
+/* .footer-signature table tr:first-child td {
+    padding-bottom: 15px;
+} */
+
+</style>
+
+<div class="footer-signature">
+    <table>
+        <tbody>
+            <tr>
+                <td>ผู้ขอโอนย้ายคลัง</td>
+                <td>อนุมัติ</td>
+                <td>คลังสินค้า <br> {{ doc.from_warehouse.split(':')[0] if ':' in doc.from_warehouse else doc.from_warehouse }}</td>
+                <td>คลังสินค้า <br> {{ doc.to_warehouse.split(':')[0] if ':' in doc.to_warehouse else doc.to_warehouse }}</td>
+            </tr>
+            <tr>
+                <td>_______________________</td>
+                <td>_______________________</td>
+                <td>_______________________</td>
+                <td>_______________________</td>
+            </tr>
+            <tr>
+                <td>Date ....../....../......</td>
+                <td>Date ....../....../......</td>
+                <td>Date ....../....../......</td>
+                <td>Date ....../....../......</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

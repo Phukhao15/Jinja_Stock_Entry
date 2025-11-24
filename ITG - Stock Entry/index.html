@@ -1,0 +1,44 @@
+{% set hhh= doc.name[:2] %}
+{% if doc.name[:7] == 'ITG-ISG' %} 
+    {% set xhead  = 'เบิกเพื่อส่งเสริมการตลาด'%} 
+    {% set xsubhead  = doc.name %}
+
+{% elif doc.name[:7] == 'ITG-ISF' %} 
+    {% set xhead  = 'เบิกสินค้าเป็นสินทรัพย์'%} 
+    {% set xsubhead  = doc.name %}
+
+{% elif doc.name[:7] == 'ITG-CSR' %} 
+    {% set xhead  = 'เบิกสินค้าเพื่อทำ CSR'%} 
+    {% set xsubhead  = doc.name %}
+
+{% elif doc.name[:7] == 'ITG-INT' %} 
+    {% set xhead  = 'เบิกใช้ภายใน'%} 
+    {% set xsubhead  = doc.name %}
+
+{% elif doc.name[:7] == 'ITG-TRA' %} 
+    {% set xhead  = 'Training Employees'%} 
+    {% set xsubhead  = doc.name %}
+
+{% else %}                                     
+    {% set xhead  = 'Stock Entry'%}          
+    {% set xsubhead  = doc.name %}
+{% endif %}
+
+<div class="print-heading">				
+    <h2>
+        <div style="font-size:18px; font-weight:bold; margin-top:5px;">
+        {{ frappe.format_date(doc.posting_date, "dd/MM/yyyy") }}
+    </div>
+        <div>{{ xhead }}</div>
+        <small class="sub-heading">{{ xsubhead }}</small>
+    </h2>
+    <div style="font-size:18px; margin-top:2px;">
+        {{ doc.remarks }}
+    </div>
+</div>
+
+{%- if doc.docstatus == 0 -%}
+<div class="text-center" document-status="draft">
+    <h4 style="margin: 0px;"> == DRAFT == </h4>
+</div>
+{%- endif -%}

@@ -1,0 +1,85 @@
+{# ------------------- Summary from Stock entry detail -------------------- #}
+<div class="margin-top">
+    <table class='table table-bordered table-condensed'>
+    {% if doc.docstatus == 1 %}
+        <caption><strong>Summary by account ( read from GL Entry ) </strong></caption>
+    {% else %}
+        <caption><strong>Summary from Stock Entry Detail</strong></caption>
+    {% endif %}
+    {% set adebit = [0] %}  
+    {% set acredit = [0] %}
+    <tr>
+        <th>No.</th>
+        <th>Account</th>
+        <th>Debit Amount</th>
+        <th>Credit Amount</th>
+    </tr>
+    {% set ll = [0] %} 
+    {% if doc.docstatus == 1 %}
+        {# --- read from GL Entry #}
+        {# ------------------- each line from GL -------------------- #}
+        {% set gl = frappe.db.sql("Select account, sum(debit) ddd, sum(credit) ccc 
+                                From `tabGL Entry` 
+                                WHERE voucher_no = %s and is_cancelled = 0
+                                group by account 
+                                order by sum(debit) desc, sum(credit) desc;", (doc.name), as_dict=1) %}
+        {% for item in gl %}
+            {% set cc = item.ccc %}
+            {% set dd = item.ddd %}
+            {% if ll.append(ll[-1]  + 1 )  %}{% endif %}
+            <tr>
+                <td style="text-align:center">{{ ll[-1] }}</td>
+                <td>{{ item.account }}</td>
+                <td style="text-align:right">{{frappe.utils.fmt_money(dd,format='Thai')}}</td>
+                <td style="text-align:right">{{frappe.utils.fmt_money(cc,format='Thai')}}</td>
+            </tr>
+            {% if adebit.append  (adebit[-1]  + dd )  %}{% endif %}
+            {% if acredit.append(acredit[-1]  + cc )  %}{% endif %}
+        {% endfor %}
+        {% set ll = [8] %} 
+    {% else %}
+        {# ----------------- each item from detail - group by account_head -------------- #}
+        {% set invrow = frappe.db.sql("SELECT  expense_account aaa, sum(amount) ddd
+              from `_1bd3e0294da19198`.`tabStock Entry Detail`
+              WHERE  parent = %s group by expense_account",  (doc.name), as_dict=1) %}
+        {%- for row in invrow -%}
+            {% if ll.append(ll[-1] + 1 ) %}{% endif %}
+            {% set dd = row.ddd %}
+            {% if dd > 0 %} {% set debit  = dd %}   {% set credit = 0  %}
+            {% else %}      {% set debit  = 0 %}    {% set credit = dd * -1 %}
+            {% endif %}
+            {% if adebit.append(adebit[-1]    + debit  )  %}{% endif %}
+            {% if acredit.append(acredit[-1]  + credit )  %}{% endif %}
+            <tr>
+                <td style="text-align:center">{{ll[-1]}}</td>
+                <td>{{row.aaa}}</td>
+                <td style="text-align:right">{{frappe.utils.fmt_money(debit,format='Thai')}}</td>
+                <td style="text-align:right">{{frappe.utils.fmt_money(credit,format='Thai')}}</td>
+            </tr>
+        {% endfor %}
+
+        {% if ll.append(ll[-1] + 1 ) %}{% endif %}
+        {% set dd = adebit[-1] %}
+        {% if dd > 0 %} {% set credit  = dd %}   {% set debit = 0  %}
+        {% else %}      {% set credit  = 0 %}    {% set debit = dd * -1 %}
+        {% endif %}
+
+        {% set def_account = frappe.db.get_value('Company', 'IT Green Public Company Limited','default_inventory_account') %}
+        <tr>
+            <td style="text-align:center">{{ll[-1]}}</td>
+            <td>{{ def_account }}</td>
+            <td style="text-align:right">{{frappe.utils.fmt_money(debit,format='Thai')}}</td>
+            <td style="text-align:right">{{frappe.utils.fmt_money(credit,format='Thai')}}</td>
+        </tr>
+            
+        {% if adebit.append(adebit[-1]    + debit  )  %}{% endif %}
+        {% if acredit.append(acredit[-1]  + credit )  %}{% endif %}
+    {% endif %}
+    <tr>
+        <td> </td>
+        <td style="text-align:right"><strong>Total</strong></td>
+        <td style="text-align:right">{{frappe.utils.fmt_money(adebit[-1],format='Thai')}}</td>
+        <td style="text-align:right">{{frappe.utils.fmt_money(acredit[-1],format='Thai')}} </td>
+    </tr>
+    </table>
+</div>

@@ -1,0 +1,22 @@
+{% set hhh= doc.name[:2] %}
+            {% if doc.name[:7] == 'ITG-ISF' %} {% set xhead  = 'ใบขอโอนย้ายคลังสินค้า'%} {% set xsubhead  = doc.name %}
+{% else %}  {% if doc.name[:7] == 'ITG-TRF' %} {% set xhead  = 'ใบขอโอนย้ายคลังสินค้า'%} {% set xsubhead  = doc.name %}
+{% else %}                                     {% set xhead  = 'Stock Entry อื่นๆ'%}    {% set xsubhead  = doc.name %}
+{% endif %} {% endif %}
+<div class="print-heading">
+    <div style="font-size:18px; font-weight:bold; margin-top:5px;">
+        {{ frappe.format_date(doc.posting_date, "dd/MM/yyyy") }}
+    </div>				
+<h2><div>{{ xhead }}</div>
+<small class="sub-heading">{{ xsubhead }}</small>
+</h2>
+    {% if doc.remarks %} 
+        <h6> {{doc.remarks }}</h6>
+    {% endif %} 
+</div>
+
+{%- if doc.docstatus == 0 -%}
+<div class="text-center" document-status="draft">
+    <h4 style="margin: 0px;"> == DRAFT == </h4>
+</div>
+{%- endif -%}
