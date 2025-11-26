@@ -26,10 +26,10 @@ body {
     <table>
         <tbody>
             <tr>
-                <td>ผู้ขอโอนย้ายคลัง</td>
+                <td>ผู้ขอโอนย้ายคลัง</td>
                 <td>อนุมัติ</td>
-                <td>คลังสินค้า <br> {{ doc.from_warehouse.split(':')[0] if ':' in doc.from_warehouse else doc.from_warehouse }}</td>
-                <td>คลังสินค้า <br> {{ doc.to_warehouse.split(':')[0] if ':' in doc.to_warehouse else doc.to_warehouse }}</td>
+                <td>คลังสินค้า <br> {{ (doc.from_warehouse or '').split(':')[0] }}</td>
+                <td>คลังสินค้า <br> {{ (doc.to_warehouse or '').split(':')[0] }}</td>
             </tr>
             <tr>
                 <td>_______________________</td>

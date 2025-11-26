@@ -4,12 +4,12 @@
 {% else %}                                     {% set xhead  = 'Stock Entry อื่นๆ'%}    {% set xsubhead  = doc.name %}
 {% endif %} {% endif %}
 <div class="print-heading">
-    <div style="font-size:18px; font-weight:bold; margin-top:5px;">
-        {{ frappe.format_date(doc.posting_date, "dd/MM/yyyy") }}
-    </div>				
 <h2><div>{{ xhead }}</div>
 <small class="sub-heading">{{ xsubhead }}</small>
 </h2>
+<div style="font-size:18px; font-weight:bold; margin-top:5px;">
+        {{ frappe.format_date(doc.posting_date, "dd/MM/yyyy") }}
+    </div>				
     {% if doc.remarks %} 
         <h6> {{doc.remarks }}</h6>
     {% endif %} 
